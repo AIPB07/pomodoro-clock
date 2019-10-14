@@ -1,5 +1,12 @@
+@font-face {
+	font-family: 'digital';
+	src: url('fonts/digital-7.ttf');
+}
+
 body, html {
 	height: 100%;
+	background-color: black;
+	color: white;
 }
 
 .h-1 {
@@ -15,7 +22,8 @@ body, html {
 }
 
 .btn {
-	height: 50%;
+	height: 30%;
+	line-height: 15px;
 }
 
 .clock {
@@ -23,7 +31,38 @@ body, html {
     align-items: center;
     border-radius: 100%;
     text-align: center;
-	/*display: flex;*/
-	/*line-height: 20px;*/
 	font-size: 2em;
+	background-color: orange;
+	color: black;
+}
+
+#title {
+	font-size: 4em;
+	justify-content: center;
+}
+
+#break-label, #session-label {
+	font-size: 2em;
+	justify-content: center;
+	line-height: 100px;
+}
+
+#time-left {
+	font-family: 'digital';
+	font-size: 4em;
+	line-height: 1px;
+}
+
+.break-btns, .session-btns {
+	font-size: 1.4em;
+	justify-content: center;
+}
+
+#break-length, #session-length {
+	padding: 10px;
+	line-height: 12px;
+}
+
+.btn-container {
+	text-align: center;
 }

@@ -31,14 +31,17 @@ class App extends React.Component {
 			if (!this.state.isPaused) {
 				if (this.state.currentPeriodLength > 0) {
 					this.setState(prevState => ({currentPeriodLength: prevState.currentPeriodLength - 1000}))
+					if (this.state.currentPeriodLength == 0) {
+						this.playAlarm();
+					}
 				} else if (this.state.currentPeriodLength <= 0 && !this.state.onBreak) {
-					this.playAlarm();
+					//this.playAlarm();
 					this.setState(prevState => ({
 						currentPeriodLength: prevState.breakLength,
 						onBreak: true
 					}))
 				} else if (this.state.currentPeriodLength <= 0 && this.state.onBreak) {
-					this.playAlarm();
+					//this.playAlarm();
 					this.setState(prevState => ({
 						currentPeriodLength: prevState.sessionLength,
 						onBreak: false
@@ -54,10 +57,13 @@ class App extends React.Component {
 
 	handleResetClick = () => {
 		this.setState (defaultState);
+		document.getElementById('beep').pause();
+		document.getElementById('beep').fastSeek(0);
+
 	}
 
 	playAlarm = () => {
-		document.getElementById('alarm').play();
+		document.getElementById('beep').play();
 	}
 
 	breakIncrement = () => {
@@ -104,10 +110,10 @@ class App extends React.Component {
 		return (
 		<div className="container-fluid h-100">
 			<div className="row h-100">
-				<div className="col-sm-3 border"></div>
-				<div className="col-sm-6 border">
-					<div className="row h-1 border">Pomodoro Clock</div>
-					<div className="row h-2 border">
+				<div className="col-sm-3"></div>
+				<div className="col-sm-6">
+					<div className="row h-1" id="title">Pomodoro Clock</div>
+					<div className="row h-2">
 						<BreakComponent 
 							time={this.state.breakLength/60000}
 							increment={this.breakIncrement}
@@ -120,12 +126,12 @@ class App extends React.Component {
 					<ClockComponent 
 						time={displayCurrentTime(this.state.currentPeriodLength)}
 						onBreak={this.state.onBreak}/>
-					<div className="row h-1 border">
+					<div className="row h-1">
 						<PlayButton onClick={this.handlePlayPauseClick}/>
 						<ResetButton onClick={this.handleResetClick}/>
 					</div>
 				</div>
-				<div className="col-sm-3 border"></div>
+				<div className="col-sm-3"></div>
 			</div>
 		</div>
 		);
@@ -134,12 +140,12 @@ class App extends React.Component {
 
 const BreakComponent = (props) => {
 	return (
-		<div className="col-sm-6 border">
-			<div className="row h-50 border" id="break-label">Break Length</div>
-			<div className="row h-50 border">
-				<button type="button" className="btn btn-primary" id="break-decrement" onClick={props.decrement}>-</button>
-				<div>{props.time}</div>
-				<button type="button" className="btn btn-primary" id="break-increment" onClick={props.increment}>+</button>
+		<div className="col-sm-6">
+			<div className="row h-50" id="break-label">Break Length</div>
+			<div className="row h-50 break-btns">
+				<button type="button" className="btn btn-warning" id="break-decrement" onClick={props.decrement}><i className="fas fa-angle-down"></i></button>
+				<div id="break-length">{props.time}</div>
+				<button type="button" className="btn btn-warning" id="break-increment" onClick={props.increment}><i className="fas fa-angle-up"></i></button>
 			</div>
 		</div>
 	);
@@ -147,12 +153,12 @@ const BreakComponent = (props) => {
 
 const SessionComponent = (props) => {
 	return (
-		<div className="col-sm-6 border">
-			<div className="row h-50 border" id="session-label">Session Length</div>
-			<div className="row h-50 border">
-				<button type="button" className="btn btn-primary" id="session-decrement" onClick={props.decrement}>-</button>
-				<div>{props.time}</div>
-				<button type="button" className="btn btn-primary" id="session-increment" onClick={props.increment}>+</button>
+		<div className="col-sm-6">
+			<div className="row h-50" id="session-label">Session Length</div>
+			<div className="row h-50 session-btns">
+				<button type="button" className="btn btn-warning" id="session-decrement" onClick={props.decrement}><i className="fas fa-angle-down"></i></button>
+				<div id="session-length">{props.time}</div>
+				<button type="button" className="btn btn-warning" id="session-increment" onClick={props.increment}><i className="fas fa-angle-up"></i></button>
 			</div>
 		</div>
 	);
@@ -160,30 +166,30 @@ const SessionComponent = (props) => {
 
 const ClockComponent = (props) => {
 	return (
-		<div className="row h-5 border">
-			<div className="col-sm-2 border"></div>
-			<div className="col-sm-8 border rounded-circle clock">
+		<div className="row h-5">
+			<div className="col-sm-2"></div>
+			<div className="col-sm-8 rounded-circle clock">
 				<div className="d-flex flex-column h-50" id="timer-label">{props.onBreak ? "Break" : "Session"}</div>
 				<br/>
 				<div className="d-flex flex-column h-50" id="time-left">{props.time}</div>
 			</div>
-			<div className="col-sm-2 border"></div>
+			<div className="col-sm-2"></div>
 		</div>
 	);
 }
 
 const PlayButton = (props) => {
 	return (
-		<div className="col-sm-6 border">
-			<button type="button" className="btn btn-primary" id="start_stop" onClick={props.onClick}>Play/Pause</button>
+		<div className="col-sm-6 btn-container">
+			<button type="button" className="btn btn-warning btn-lg" id="start_stop" onClick={props.onClick}><i className="fas fa-play"></i><i className="fas fa-pause"></i></button>
 		</div>
 	);
 }
 
 const ResetButton = (props) => {
 	return (
-		<div className="col-sm-6 border">
-			<button type="button" className="btn btn-primary" id="reset" onClick={props.onClick}>Reset</button>
+		<div className="col-sm-6 btn-container">
+			<button type="button" className="btn btn-warning btn-lg" id="reset" onClick={props.onClick}><i className="fas fa-sync-alt"></i></button>
 		</div>
 	)
 }
